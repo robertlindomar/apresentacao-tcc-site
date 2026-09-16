@@ -267,10 +267,6 @@
       gap: 1.1rem;
     }
 
-    .grade.mobile {
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    }
-
     .tela {
       position: relative;
       border: 1px solid var(--linha);
@@ -295,11 +291,6 @@
       overflow: hidden;
       display: grid;
       place-items: center;
-    }
-
-    .tela.mobile .tela-frame {
-      aspect-ratio: 9 / 16;
-      max-height: 340px;
     }
 
     .tela-frame img {
@@ -339,6 +330,134 @@
       display: block;
       margin-top: 0.2rem;
       font-size: 0.82rem;
+      color: var(--texto-suave);
+    }
+
+    /* Carrossel mobile — tela completa e legível */
+    .carrossel-mobile {
+      position: relative;
+    }
+
+    .carrossel-trilho {
+      display: flex;
+      gap: 1.25rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 0.5rem 0.25rem 1.25rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(26, 107, 74, 0.35) transparent;
+    }
+
+    .carrossel-trilho::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .carrossel-trilho::-webkit-scrollbar-thumb {
+      background: rgba(26, 107, 74, 0.3);
+      border-radius: 999px;
+    }
+
+    .tela.mobile {
+      flex: 0 0 min(280px, 78vw);
+      width: min(280px, 78vw);
+      scroll-snap-align: center;
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+      border: 0;
+      overflow: visible;
+      box-shadow: none;
+    }
+
+    .tela.mobile:hover {
+      transform: translateY(-3px);
+      box-shadow: none;
+      border-color: transparent;
+    }
+
+    .tela.mobile .tela-frame {
+      aspect-ratio: 9 / 19.5;
+      max-height: none;
+      height: min(580px, 72vh);
+      border-radius: 28px;
+      border: 1px solid rgba(12, 47, 36, 0.16);
+      background: #0c2f24;
+      padding: 10px;
+      box-shadow: var(--sombra);
+      overflow: hidden;
+    }
+
+    .tela.mobile .tela-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: top center;
+      border-radius: 20px;
+      background: #fff;
+    }
+
+    .tela.mobile:hover .tela-frame img {
+      transform: none;
+    }
+
+    .tela.mobile .tela-info {
+      border: 0;
+      background: transparent;
+      padding: 0.85rem 0.35rem 0;
+      text-align: center;
+    }
+
+    .carrossel-controles {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    .carrossel-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid var(--linha);
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--verde-escuro);
+      font-size: 1.15rem;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .carrossel-btn:hover {
+      background: #fff;
+      transform: translateY(-1px);
+    }
+
+    .carrossel-dots {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem;
+      max-width: 16rem;
+    }
+
+    .carrossel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(12, 47, 36, 0.2);
+      transition: width 0.2s ease, background 0.2s ease;
+    }
+
+    .carrossel-dot.ativo {
+      width: 22px;
+      background: var(--verde);
+    }
+
+    .carrossel-legenda {
+      text-align: center;
+      margin-top: 0.65rem;
+      font-size: 0.85rem;
       color: var(--texto-suave);
     }
 
@@ -441,9 +560,16 @@
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
     }
 
+    .lightbox-midia.mobile {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
     .lightbox-midia.mobile img {
-      max-height: calc(100vh - 11rem);
-      width: min(360px, 100%);
+      max-height: calc(100vh - 10rem);
+      width: auto;
+      max-width: min(420px, 92vw);
+      object-fit: contain;
+      background: #fff;
     }
 
     @keyframes subir {
@@ -476,8 +602,22 @@
         width: min(280px, 82vw);
       }
 
+      .tela.mobile {
+        flex-basis: min(250px, 82vw);
+        width: min(250px, 82vw);
+      }
+
       .tela.mobile .tela-frame {
-        max-height: 280px;
+        height: min(520px, 68vh);
+      }
+
+      .lightbox-painel {
+        max-height: calc(100vh - 1rem);
+      }
+
+      .lightbox-topo,
+      .lightbox-rodape {
+        flex-wrap: wrap;
       }
     }
   </style>
@@ -666,39 +806,157 @@
             <p>${secao.descricao}</p>
           </div>
         `;
-
-        const grade = document.createElement("div");
-        grade.className = "grade" + (secao.id === "mobile" ? " mobile" : "");
-
-        secao.itens.forEach((item, iIndex) => {
-          const flatIndex = flat.findIndex(
-            (t) => t.arquivo === item.arquivo && t.secao === secao.id
-          );
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "tela" + (secao.id === "mobile" ? " mobile" : "");
-          btn.style.animationDelay = `${(iIndex + sIndex) * 0.03}s`;
-          btn.setAttribute("aria-label", `Abrir ${item.titulo}`);
-          btn.innerHTML = `
-            <div class="tela-frame">
-              <img src="${item.arquivo}" alt="${item.titulo}" loading="lazy" />
-            </div>
-            <div class="tela-info">
-              <small>${secao.titulo}</small>
-              <strong>${item.titulo}</strong>
-              <span>${item.detalhe}</span>
-            </div>
-          `;
-          btn.addEventListener("click", () => abrir(flatIndex));
-          grade.appendChild(btn);
-        });
-
         section.appendChild(cabecalho);
-        section.appendChild(grade);
+
+        if (secao.id === "mobile") {
+          section.appendChild(criarCarrosselMobile(secao, sIndex));
+        } else {
+          const grade = document.createElement("div");
+          grade.className = "grade";
+
+          secao.itens.forEach((item, iIndex) => {
+            const flatIndex = flat.findIndex(
+              (t) => t.arquivo === item.arquivo && t.secao === secao.id
+            );
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "tela";
+            btn.style.animationDelay = `${(iIndex + sIndex) * 0.03}s`;
+            btn.setAttribute("aria-label", `Abrir ${item.titulo}`);
+            btn.innerHTML = `
+              <div class="tela-frame">
+                <img src="${item.arquivo}" alt="${item.titulo}" loading="lazy" />
+              </div>
+              <div class="tela-info">
+                <small>${secao.titulo}</small>
+                <strong>${item.titulo}</strong>
+                <span>${item.detalhe}</span>
+              </div>
+            `;
+            btn.addEventListener("click", () => abrir(flatIndex));
+            grade.appendChild(btn);
+          });
+
+          section.appendChild(grade);
+        }
+
         galeria.appendChild(section);
       });
 
       document.getElementById("contagem-total").textContent = String(flat.length);
+    }
+
+    function criarCarrosselMobile(secao, sIndex) {
+      const wrap = document.createElement("div");
+      wrap.className = "carrossel-mobile";
+
+      const trilho = document.createElement("div");
+      trilho.className = "carrossel-trilho";
+      trilho.setAttribute("tabindex", "0");
+      trilho.setAttribute("aria-label", "Carrossel de telas mobile");
+
+      const controles = document.createElement("div");
+      controles.className = "carrossel-controles";
+
+      const btnPrev = document.createElement("button");
+      btnPrev.type = "button";
+      btnPrev.className = "carrossel-btn";
+      btnPrev.setAttribute("aria-label", "Tela anterior");
+      btnPrev.textContent = "←";
+
+      const btnNext = document.createElement("button");
+      btnNext.type = "button";
+      btnNext.className = "carrossel-btn";
+      btnNext.setAttribute("aria-label", "Próxima tela");
+      btnNext.textContent = "→";
+
+      const dots = document.createElement("div");
+      dots.className = "carrossel-dots";
+
+      const legenda = document.createElement("p");
+      legenda.className = "carrossel-legenda";
+
+      let ativo = 0;
+
+      function atualizarUI() {
+        [...dots.children].forEach((dot, i) => {
+          dot.classList.toggle("ativo", i === ativo);
+        });
+        const item = secao.itens[ativo];
+        legenda.textContent = `${ativo + 1} / ${secao.itens.length} — ${item.titulo}`;
+      }
+
+      function irPara(indice) {
+        ativo = (indice + secao.itens.length) % secao.itens.length;
+        const alvo = trilho.children[ativo];
+        if (alvo) {
+          alvo.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        }
+        atualizarUI();
+      }
+
+      secao.itens.forEach((item, iIndex) => {
+        const flatIndex = flat.findIndex(
+          (t) => t.arquivo === item.arquivo && t.secao === secao.id
+        );
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tela mobile";
+        btn.style.animationDelay = `${(iIndex + sIndex) * 0.03}s`;
+        btn.setAttribute("aria-label", `Abrir ${item.titulo}`);
+        btn.innerHTML = `
+          <div class="tela-frame">
+            <img src="${item.arquivo}" alt="${item.titulo}" loading="lazy" />
+          </div>
+          <div class="tela-info">
+            <small>${secao.titulo}</small>
+            <strong>${item.titulo}</strong>
+            <span>${item.detalhe}</span>
+          </div>
+        `;
+        btn.addEventListener("click", () => abrir(flatIndex));
+        trilho.appendChild(btn);
+
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "carrossel-dot" + (iIndex === 0 ? " ativo" : "");
+        dot.setAttribute("aria-label", `Ir para ${item.titulo}`);
+        dot.addEventListener("click", () => irPara(iIndex));
+        dots.appendChild(dot);
+      });
+
+      trilho.addEventListener("scroll", () => {
+        const centro = trilho.scrollLeft + trilho.clientWidth / 2;
+        let melhor = 0;
+        let menor = Infinity;
+        [...trilho.children].forEach((card, i) => {
+          const mid = card.offsetLeft + card.offsetWidth / 2;
+          const dist = Math.abs(mid - centro);
+          if (dist < menor) {
+            menor = dist;
+            melhor = i;
+          }
+        });
+        if (melhor !== ativo) {
+          ativo = melhor;
+          atualizarUI();
+        }
+      }, { passive: true });
+
+      btnPrev.addEventListener("click", () => irPara(ativo - 1));
+      btnNext.addEventListener("click", () => irPara(ativo + 1));
+
+      controles.appendChild(btnPrev);
+      controles.appendChild(dots);
+      controles.appendChild(btnNext);
+
+      wrap.appendChild(trilho);
+      wrap.appendChild(controles);
+      wrap.appendChild(legenda);
+      atualizarUI();
+
+      return wrap;
     }
 
     function abrir(indice) {
