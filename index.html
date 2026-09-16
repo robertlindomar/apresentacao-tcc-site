@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conecta Comércio — Design do sistema</title>
+  <link rel="icon" type="image/png" href="imagens/asset/conecta-comercio-simbolo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --verde-escuro: #0c2f24;
+      --verde: #1a6b4a;
+      --verde-vivo: #2d9b6a;
+      --coral: #d76a4c;
+      --areia: #e8efe9;
+      --papel: #f7faf7;
+      --texto: #13241c;
+      --texto-suave: #4d6358;
+      --linha: rgba(12, 47, 36, 0.12);
+      --sombra: 0 18px 40px rgba(12, 47, 36, 0.12);
+      --raio: 18px;
+      --fonte-ui: "Sora", system-ui, sans-serif;
+      --fonte-display: "Fraunces", Georgia, serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--fonte-ui);
+      color: var(--texto);
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(45, 155, 106, 0.18), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(215, 106, 76, 0.14), transparent 50%),
+        linear-gradient(180deg, #eef5f0 0%, var(--papel) 35%, #e6efe8 100%);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      border: 0;
+      background: none;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .topo {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(14px);
+      background: rgba(247, 250, 247, 0.82);
+      border-bottom: 1px solid var(--linha);
+    }
+
+    .topo-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .marca-logo {
+      height: 44px;
+      width: auto;
+      display: block;
+    }
+
+    .marca-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      padding-left: 0.85rem;
+      border-left: 1px solid var(--linha);
+    }
+
+    .marca-meta span {
+      font-size: 0.72rem;
+      color: var(--texto-suave);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+    }
+
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .filtro {
+      padding: 0.55rem 0.95rem;
+      border-radius: 999px;
+      border: 1px solid var(--linha);
+      background: rgba(255, 255, 255, 0.55);
+      color: var(--texto-suave);
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .filtro:hover {
+      transform: translateY(-1px);
+      border-color: rgba(26, 107, 74, 0.35);
+    }
+
+    .filtro.ativo {
+      background: var(--verde-escuro);
+      border-color: var(--verde-escuro);
+      color: #f4faf6;
+    }
+
+    .hero {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 3.5rem 1.25rem 2rem;
+      display: grid;
+      gap: 1.25rem;
+      align-items: end;
+      min-height: min(72vh, 640px);
+    }
+
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--verde);
+    }
+
+    .hero-logo {
+      width: min(420px, 88vw);
+      height: auto;
+      display: block;
+    }
+
+    .hero p {
+      max-width: 36rem;
+      font-size: 1.05rem;
+      color: var(--texto-suave);
+    }
+
+    .hero-acoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.2rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primario {
+      background: var(--verde-escuro);
+      color: #f4faf6;
+    }
+
+    .btn-secundario {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--linha);
+      color: var(--texto);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--linha);
+      margin-top: 0.75rem;
+    }
+
+    .hero-meta div strong {
+      display: block;
+      font-size: 1.4rem;
+      font-family: var(--fonte-display);
+      color: var(--verde-escuro);
+    }
+
+    .hero-meta div span {
+      font-size: 0.85rem;
+      color: var(--texto-suave);
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 1.25rem 5rem;
+    }
+
+    .secao {
+      margin-top: 3.5rem;
+      scroll-margin-top: 5.5rem;
+    }
+
+    .secao.oculta {
+      display: none;
+    }
+
+    .secao-cabecalho {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.35rem;
+      flex-wrap: wrap;
+    }
+
+    .secao-cabecalho h2 {
+      font-family: var(--fonte-display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      letter-spacing: -0.02em;
+      color: var(--verde-escuro);
+    }
+
+    .secao-cabecalho p {
+      color: var(--texto-suave);
+      max-width: 34rem;
+      font-size: 0.95rem;
+    }
+
+    .grade {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.1rem;
+    }
+
+    .grade.mobile {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+
+    .tela {
+      position: relative;
+      border: 1px solid var(--linha);
+      border-radius: var(--raio);
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.72);
+      text-align: left;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      animation: subir 0.45s ease both;
+    }
+
+    .tela:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--sombra);
+      border-color: rgba(26, 107, 74, 0.28);
+    }
+
+    .tela-frame {
+      aspect-ratio: 16 / 10;
+      background:
+        linear-gradient(145deg, #dfe9e3, #f5f8f5);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    .tela.mobile .tela-frame {
+      aspect-ratio: 9 / 16;
+      max-height: 340px;
+    }
+
+    .tela-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      transition: transform 0.35s ease;
+    }
+
+    .tela:hover .tela-frame img {
+      transform: scale(1.03);
+    }
+
+    .tela-info {
+      padding: 0.95rem 1rem 1.1rem;
+      border-top: 1px solid var(--linha);
+    }
+
+    .tela-info small {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--coral);
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .tela-info strong {
+      display: block;
+      font-size: 0.98rem;
+      letter-spacing: -0.01em;
+    }
+
+    .tela-info span {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.82rem;
+      color: var(--texto-suave);
+    }
+
+    .rodape {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 1.25rem 2.5rem;
+      color: var(--texto-suave);
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--linha);
+      padding-top: 1.5rem;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      background: rgba(8, 24, 18, 0.88);
+      backdrop-filter: blur(8px);
+    }
+
+    .lightbox.aberto {
+      display: flex;
+      animation: fade 0.2s ease;
+    }
+
+    .lightbox-painel {
+      width: min(1200px, 100%);
+      max-height: calc(100vh - 2.5rem);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 0.85rem;
+    }
+
+    .lightbox-topo,
+    .lightbox-rodape {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      color: #eef6f1;
+    }
+
+    .lightbox-topo h3 {
+      font-family: var(--fonte-display);
+      font-size: 1.35rem;
+    }
+
+    .lightbox-topo p,
+    .lightbox-rodape p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    .lightbox-acoes {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .lightbox-acoes button {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 1.1rem;
+      transition: background 0.2s ease;
+    }
+
+    .lightbox-acoes button:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .lightbox-midia {
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      overflow: auto;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.75rem;
+    }
+
+    .lightbox-midia img {
+      max-height: calc(100vh - 11rem);
+      width: auto;
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    .lightbox-midia.mobile img {
+      max-height: calc(100vh - 11rem);
+      width: min(360px, 100%);
+    }
+
+    @keyframes subir {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 720px) {
+      .hero {
+        min-height: auto;
+        padding-top: 2.2rem;
+      }
+
+      .marca-meta {
+        display: none;
+      }
+
+      .hero-logo {
+        width: min(280px, 82vw);
+      }
+
+      .tela.mobile .tela-frame {
+        max-height: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topo">
+    <div class="topo-inner">
+      <a class="marca" href="#topo" aria-label="Conecta Comércio">
+        <img
+          class="marca-logo"
+          src="imagens/asset/conecta-comercio-logo-horizontal.svg"
+          alt="Conecta Comércio"
+          width="180"
+          height="58"
+        />
+        <div class="marca-meta">
+          <span>Design do sistema</span>
+        </div>
+      </a>
+      <nav class="filtros" aria-label="Filtrar áreas">
+        <button class="filtro ativo" data-filtro="todas" type="button">Todas</button>
+        <button class="filtro" data-filtro="associacao" type="button">Associação</button>
+        <button class="filtro" data-filtro="lojista" type="button">Lojista</button>
+        <button class="filtro" data-filtro="mobile" type="button">Mobile</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="topo">
+    <p class="hero-eyebrow">Design de interface · TCC</p>
+    <img
+      class="hero-logo"
+      src="imagens/asset/conecta-comercio-logo-horizontal.svg"
+      alt="Conecta Comércio"
+      width="420"
+      height="134"
+    />
+    <p>
+      Apresentação do design do Conecta Comércio: identidade visual
+      e interfaces da associação, do lojista e do aplicativo do consumidor.
+    </p>
+    <div class="hero-acoes">
+      <a class="btn btn-primario" href="#associacao">Ver design web</a>
+      <a class="btn btn-secundario" href="#mobile">Ver design mobile</a>
+    </div>
+    <div class="hero-meta">
+      <div>
+        <strong id="contagem-total">0</strong>
+        <span>telas de design</span>
+      </div>
+      <div>
+        <strong>3</strong>
+        <span>áreas do sistema</span>
+      </div>
+      <div>
+        <strong>Web + App</strong>
+        <span>mesma identidade visual</span>
+      </div>
+    </div>
+  </section>
+
+  <main id="galeria"></main>
+
+  <footer class="rodape">
+    <p>Conecta Comércio — design do sistema para o comércio local.</p>
+    <p>Clique em uma tela para ampliar · setas ← → · Esc fecha</p>
+  </footer>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="lightbox-painel">
+      <div class="lightbox-topo">
+        <div>
+          <h3 id="lb-titulo">Tela</h3>
+          <p id="lb-subtitulo"></p>
+        </div>
+        <div class="lightbox-acoes">
+          <button type="button" id="lb-prev" aria-label="Anterior">←</button>
+          <button type="button" id="lb-next" aria-label="Próxima">→</button>
+          <button type="button" id="lb-fechar" aria-label="Fechar">✕</button>
+        </div>
+      </div>
+      <div class="lightbox-midia" id="lb-midia">
+        <img id="lb-img" src="" alt="" />
+      </div>
+      <div class="lightbox-rodape">
+        <p id="lb-indice"></p>
+        <p>Use as setas do teclado para navegar</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TELAS = [
+      {
+        id: "associacao",
+        titulo: "Associação",
+        descricao: "Design das telas administrativas da associação comercial.",
+        itens: [
+          { arquivo: "imagens/associacao/web-login.png", titulo: "Login", detalhe: "Acesso à área administrativa" },
+          { arquivo: "imagens/associacao/web-cadastro-lojista.png", titulo: "Cadastro de lojista", detalhe: "Entrada do lojista no sistema" },
+          { arquivo: "imagens/associacao/web-associacao-dashboard.png", titulo: "Dashboard", detalhe: "Visão geral da operação" },
+          { arquivo: "imagens/associacao/00-REFERENCIA-VISUAL-OFICIAL.png", titulo: "Referência visual", detalhe: "Direção do design do painel" },
+          { arquivo: "imagens/associacao/web-associacao-pre-cadastros.png", titulo: "Pré-cadastros", detalhe: "Aprovação de novas lojas" },
+          { arquivo: "imagens/associacao/web-associacao-lojas-aprovadas.png", titulo: "Lojas aprovadas", detalhe: "Lojas participantes" },
+          { arquivo: "imagens/associacao/web-associacao-campanhas.png", titulo: "Campanhas", detalhe: "Gestão de campanhas" },
+          { arquivo: "imagens/associacao/web-associacao-sorteios.png", titulo: "Sorteios", detalhe: "Gestão de sorteios" },
+          { arquivo: "imagens/associacao/web-associacao-associacoes.png", titulo: "Minha associação", detalhe: "Dados da associação" },
+          { arquivo: "imagens/associacao/web-associacao-usuarios.png", titulo: "Usuários", detalhe: "Estado fora do escopo" },
+        ],
+      },
+      {
+        id: "lojista",
+        titulo: "Lojista",
+        descricao: "Design das telas de gestão da loja no painel web.",
+        itens: [
+          { arquivo: "imagens/lojista/web-lojista-minha-loja.png", titulo: "Minha loja", detalhe: "Status e dados da loja" },
+          { arquivo: "imagens/lojista/web-lojista-produtos.png", titulo: "Produtos", detalhe: "Catálogo da loja" },
+          { arquivo: "imagens/lojista/web-lojista-categorias.png", titulo: "Categorias", detalhe: "Organização do catálogo" },
+          { arquivo: "imagens/lojista/web-lojista-promocoes.png", titulo: "Promoções", detalhe: "Ofertas da loja" },
+          { arquivo: "imagens/lojista/web-lojista-eventos.png", titulo: "Eventos", detalhe: "Divulgação de eventos" },
+          { arquivo: "imagens/lojista/web-lojista-missoes.png", titulo: "Missões", detalhe: "Missões para o consumidor" },
+          { arquivo: "imagens/lojista/web-lojista-recompensas.png", titulo: "Recompensas", detalhe: "Prêmios por pontos" },
+          { arquivo: "imagens/lojista/web-lojista-consumidores.png", titulo: "Consumidores", detalhe: "Público da loja" },
+          { arquivo: "imagens/lojista/web-lojista-acesso-indisponivel.png", titulo: "Acesso indisponível", detalhe: "Estado de permissão" },
+        ],
+      },
+      {
+        id: "mobile",
+        titulo: "Mobile",
+        descricao: "Design do aplicativo do consumidor.",
+        itens: [
+          { arquivo: "imagens/mobile/mobile-login.png", titulo: "Login", detalhe: "Acesso do consumidor" },
+          { arquivo: "imagens/mobile/mobile-criar-conta.png", titulo: "Criar conta", detalhe: "Cadastro no app" },
+          { arquivo: "imagens/mobile/mobile-inicio.png", titulo: "Início", detalhe: "Home do aplicativo" },
+          { arquivo: "imagens/mobile/mobile-lojas.png", titulo: "Lojas", detalhe: "Lista de lojas" },
+          { arquivo: "imagens/mobile/mobile-loja-detalhes.png", titulo: "Detalhe da loja", detalhe: "Página da loja" },
+          { arquivo: "imagens/mobile/mobile-loja-produtos.png", titulo: "Produtos da loja", detalhe: "Vitrine no app" },
+          { arquivo: "imagens/mobile/mobile-missoes.png", titulo: "Missões", detalhe: "Missões do consumidor" },
+          { arquivo: "imagens/mobile/mobile-missao-escanear.png", titulo: "Escanear QR", detalhe: "Leitura de missão" },
+          { arquivo: "imagens/mobile/mobile-nfce.png", titulo: "Ler NFC-e", detalhe: "Leitura de nota fiscal" },
+          { arquivo: "imagens/mobile/mobile-recompensas.png", titulo: "Recompensas", detalhe: "Resgate de prêmios" },
+          { arquivo: "imagens/mobile/mobile-perfil.png", titulo: "Perfil", detalhe: "Conta do consumidor" },
+        ],
+      },
+    ];
+
+    const galeria = document.getElementById("galeria");
+    const lightbox = document.getElementById("lightbox");
+    const lbImg = document.getElementById("lb-img");
+    const lbTitulo = document.getElementById("lb-titulo");
+    const lbSubtitulo = document.getElementById("lb-subtitulo");
+    const lbIndice = document.getElementById("lb-indice");
+    const lbMidia = document.getElementById("lb-midia");
+
+    let flat = [];
+    let indiceAtual = 0;
+    let filtroAtual = "todas";
+
+    function montarFlat() {
+      flat = TELAS.flatMap((secao) =>
+        secao.itens.map((item) => ({
+          ...item,
+          secao: secao.id,
+          secaoTitulo: secao.titulo,
+          mobile: secao.id === "mobile",
+        }))
+      );
+    }
+
+    function render() {
+      galeria.innerHTML = "";
+
+      TELAS.forEach((secao, sIndex) => {
+        const section = document.createElement("section");
+        section.className = "secao";
+        section.id = secao.id;
+        if (filtroAtual !== "todas" && filtroAtual !== secao.id) {
+          section.classList.add("oculta");
+        }
+
+        const cabecalho = document.createElement("div");
+        cabecalho.className = "secao-cabecalho";
+        cabecalho.innerHTML = `
+          <div>
+            <h2>${secao.titulo}</h2>
+            <p>${secao.descricao}</p>
+          </div>
+        `;
+
+        const grade = document.createElement("div");
+        grade.className = "grade" + (secao.id === "mobile" ? " mobile" : "");
+
+        secao.itens.forEach((item, iIndex) => {
+          const flatIndex = flat.findIndex(
+            (t) => t.arquivo === item.arquivo && t.secao === secao.id
+          );
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "tela" + (secao.id === "mobile" ? " mobile" : "");
+          btn.style.animationDelay = `${(iIndex + sIndex) * 0.03}s`;
+          btn.setAttribute("aria-label", `Abrir ${item.titulo}`);
+          btn.innerHTML = `
+            <div class="tela-frame">
+              <img src="${item.arquivo}" alt="${item.titulo}" loading="lazy" />
+            </div>
+            <div class="tela-info">
+              <small>${secao.titulo}</small>
+              <strong>${item.titulo}</strong>
+              <span>${item.detalhe}</span>
+            </div>
+          `;
+          btn.addEventListener("click", () => abrir(flatIndex));
+          grade.appendChild(btn);
+        });
+
+        section.appendChild(cabecalho);
+        section.appendChild(grade);
+        galeria.appendChild(section);
+      });
+
+      document.getElementById("contagem-total").textContent = String(flat.length);
+    }
+
+    function abrir(indice) {
+      if (indice < 0 || indice >= flat.length) return;
+      indiceAtual = indice;
+      const item = flat[indice];
+      lbImg.src = item.arquivo;
+      lbImg.alt = item.titulo;
+      lbTitulo.textContent = item.titulo;
+      lbSubtitulo.textContent = `${item.secaoTitulo} · ${item.detalhe}`;
+      lbIndice.textContent = `${indice + 1} / ${flat.length}`;
+      lbMidia.classList.toggle("mobile", Boolean(item.mobile));
+      lightbox.classList.add("aberto");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function fechar() {
+      lightbox.classList.remove("aberto");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      lbImg.src = "";
+    }
+
+    function navegar(delta) {
+      if (!lightbox.classList.contains("aberto")) return;
+      const proximo = (indiceAtual + delta + flat.length) % flat.length;
+      abrir(proximo);
+    }
+
+    document.querySelectorAll(".filtro").forEach((botao) => {
+      botao.addEventListener("click", () => {
+        document.querySelectorAll(".filtro").forEach((b) => b.classList.remove("ativo"));
+        botao.classList.add("ativo");
+        filtroAtual = botao.dataset.filtro;
+        render();
+        if (filtroAtual !== "todas") {
+          document.getElementById(filtroAtual)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    });
+
+    document.getElementById("lb-fechar").addEventListener("click", fechar);
+    document.getElementById("lb-prev").addEventListener("click", () => navegar(-1));
+    document.getElementById("lb-next").addEventListener("click", () => navegar(1));
+
+    lightbox.addEventListener("click", (evento) => {
+      if (evento.target === lightbox) fechar();
+    });
+
+    document.addEventListener("keydown", (evento) => {
+      if (evento.key === "Escape") fechar();
+      if (evento.key === "ArrowLeft") navegar(-1);
+      if (evento.key === "ArrowRight") navegar(1);
+    });
+
+    montarFlat();
+    render();
+  </script>
+</body>
+</html>
