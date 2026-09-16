@@ -793,8 +793,8 @@
       e interfaces da associação, do lojista e do aplicativo do consumidor.
     </p>
     <div class="hero-acoes">
-      <a class="btn btn-primario" href="#associacao">Ver design web</a>
-      <a class="btn btn-secundario" href="#mobile">Ver design mobile</a>
+      <button class="btn btn-primario" type="button" data-ir-filtro="associacao">Ver design web</button>
+      <button class="btn btn-secundario" type="button" data-ir-filtro="mobile">Ver design mobile</button>
     </div>
     <div class="hero-meta">
       <div>
@@ -1121,18 +1121,28 @@
       abrir(proximo);
     }
 
-    document.querySelectorAll(".filtro").forEach((botao) => {
-      botao.addEventListener("click", () => {
-        document.querySelectorAll(".filtro").forEach((b) => b.classList.remove("ativo"));
-        botao.classList.add("ativo");
-        filtroAtual = botao.dataset.filtro;
-        render();
-        if (filtroAtual !== "todas") {
-          document.getElementById(filtroAtual)?.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+    function aplicarFiltro(filtro, rolar = true) {
+      filtroAtual = filtro;
+      document.querySelectorAll(".filtro").forEach((botao) => {
+        botao.classList.toggle("ativo", botao.dataset.filtro === filtro);
       });
+      render();
+      if (!rolar) return;
+      if (filtro !== "todas") {
+        requestAnimationFrame(() => {
+          document.getElementById(filtro)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    document.querySelectorAll(".filtro").forEach((botao) => {
+      botao.addEventListener("click", () => aplicarFiltro(botao.dataset.filtro));
+    });
+
+    document.querySelectorAll("[data-ir-filtro]").forEach((botao) => {
+      botao.addEventListener("click", () => aplicarFiltro(botao.dataset.irFiltro));
     });
 
     document.getElementById("lb-fechar").addEventListener("click", fechar);
